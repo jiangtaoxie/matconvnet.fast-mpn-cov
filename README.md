@@ -1,6 +1,88 @@
+# Fast MPN-COV (i.e., iSQRT-COV)
+
+Created by [Jiangtao Xie](http://jiangtaoxie.github.io) and [Peihua Li](http://www.peihuali.org)
+<div>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="http://peihuali.org/pictures/fast_MPN-COV.JPG" width="80%"/>
+</div>
+
+## Introduction
+
+This repository contains the source code under MatConvNet framework and models trained on ImageNet 2012 dataset for the following paper:
+
+         @InProceedings{Li_2018_CVPR,
+               author = {Li, Peihua and Xie, Jiangtao and Wang, Qilong and Gao, Zilin},
+               title = {Towards Faster Training of Global Covariance Pooling Networks by Iterative Matrix Square Root Normalization},
+               booktitle = { IEEE Int. Conf. on Computer Vision and Pattern Recognition (CVPR)},
+               month = {June},
+               year = {2018}
+         }
+
+In this paper, we propose a fast MPN-COV method for computing matrix square root normalization, which is very efficient, scalable to multiple-GPU configuration, while enjoying matching performance with [MPN-COV](https://github.com/jiangtaoxie/MPN-COV). You can visit our [project page](http://www.peihuali.org/iSQRT-COV) for more details.
+
 ## Implementation details
 
 We developed our programs based on MatConvNet and Matlab 2017b, running under either Ubuntu 14.04.5 LTS. To implement Fast MPN-COV meta-layer, we designed a loop-embedded directed graph, which can be divided into 3 sublayers, including `Post-normalization`, `Newton-Schulz iteration` and `Post-compensation`. Both the forward and backward propagations are performed using C++ on GPU.
+
+## Classification Results
+
+
+### Classification results (single crop 224x224, %) on ImageNet 2012 validation set
+
+<table>
+    <tr>
+        <th rowspan="2" style="text-align:center;">Network</th>
+        <th rowspan="2" style="text-align:center;">Top-1 Error</th>
+        <th rowspan="2" style="text-align:center;">Top-5 Error</th>
+        <th colspan="2" style="text-align:center;">Pre-trained models</th>
+    </tr>
+    <tr>
+        <td style="text-align:center;">GoogleDrive</td>
+        <td style="text-align:center;">BaiduCloud</td>
+    </tr>
+    <tr>
+        <td style="text-align:center">fast MPN-COV-ResNet50</td>
+        <td style="text-align:center;">22.14</td>
+        <td style="text-align:center;">6.22</td>
+        <td style="text-align:center;"><a href="https://drive.google.com/open?id=1fG5Mz6GzlMt7TeWq_HAr7NVqetVpgrRS">202.7MB</a></td>
+        <td style="text-align:center;"><a href="https://pan.baidu.com/s/1I1XvWfx8JGB02OUHCxXpEg">202.7MB</a></td>
+    </tr>
+    <tr>
+        <td style="text-align:center">fast MPN-COV-ResNet101</td>
+        <td style="text-align:center;">21.21</td>
+        <td style="text-align:center;">5.68</td>
+        <td style="text-align:center;"><a href="https://drive.google.com/open?id=1ezNfxAcZNuWChIkjjC1eabVdNuVwObbS">270.5MB</a></td>
+        <td style="text-align:center;"><a href="https://pan.baidu.com/s/1YuETiWAfw-RGN0sVxDlU8g">270.5MB</a></td>
+    </tr>
+</table>
+
+#### Fine-grained classification results (top-1 accuracy rates, %)
+<table>
+     <tr>
+         <th style="text-align:center;">Backbone model</th>
+         <th  style="text-align:center;">Dim.</th>
+         <th style="text-align:center;"><a href="http://www.vision.caltech.edu/visipedia/CUB-200-2011.html">Birds</a></th>
+         <th  style="text-align:center;"><a href="http://ai.stanford.edu/~jkrause/cars/car_dataset.html">Aircrafts</a></th>
+         <th style="text-align:center;"><a href="http://www.robots.ox.ac.uk/~vgg/data/oid/">Cars</a></th>
+     </tr>
+     <tr>
+         <td style="text-align:center;">ResNet-50</td>
+         <td style="text-align:center;">32K</td>
+         <td style="text-align:center;">88.1</td>
+         <td style="text-align:center;">90.0</td>
+         <td style="text-align:center;">92.8</td>
+     </tr>
+     <tr>
+         <td style="text-align:center;">ResNet-101</td>
+         <td style="text-align:center;">32K</td>
+         <td style="text-align:center;">88.7</td>
+         <td style="text-align:center;">91.4</td>
+         <td style="text-align:center;">93.3</td>
+     </tr>
+</table>
+
+- Our experiments in paper are running under MatConvNet framework.
+- Our method uses neither bounding boxes nor part annotations.
+- We implement our source code on PyTorch toolkit, which achieve slightly better performance than MatConvNet. For more details, please refer to [PyTorch version of Fast MPN-COV](https://github.com/jiangtaoxie/fast-MPN-COV).
 
 ### Created and Modified
 
@@ -145,3 +227,12 @@ In our [demo](https://github.com/jiangtaoxie/demo/tree/master/imagenet) code, we
 
 1. **`'coef'`**: It is reserved for future use. Currently, it should be set to 1.
 2. **`'iterNum'`**: The number of Newton-Schulz iteration, 3 to 5 times is enough.
+
+## Other Implementations
+
+1. [PyTorch Implementation](https://github.com/jiangtaoxie/fast-MPN-COV)
+2. [TensorFlow Implemention](./TensorFlow)(coming soon)
+
+**If you have any questions or suggestions, please contact me**
+
+`jiangtaoxie@mail.dlut.edu.cn`
